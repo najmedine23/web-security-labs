@@ -1,24 +1,22 @@
-Overview
+# Reflected XSS into a JavaScript string (single quote + backslash escaped)
+**Level:** Practitioner  
+**Category:** XSS  
+**Status:** Solved
 
-In this lab, the search parameter is reflected inside a JavaScript string.
-The application escapes single quotes (' → \') and backslashes (\ → \\), which prevents the usual string-breaking payloads.
+## 🔍 Lab Description
+The search input appears inside a JavaScript string.  
+Single quotes (`'`) and backslashes (`\`) are escaped, so you cannot break the string normally.
 
-What’s happening
-The input ends up inside a script like this:
-  var searchTerm = '<user input>';
-Because the application escapes ' and \, normal payloads fail.
-💡 Exploitation
-</script><script>alert(1)</script>
-The solution is to break out of the script entirely using HTML context:
+## 🎯 Goal
+Break the JavaScript string and run `alert(1)`.
 
-Why it works
+## 🧠 What I Learned
+- Simple XSS payloads fail when quotes are escaped.
+- Sometimes the easiest way is to escape the whole `<script>` block.
+- Injecting a new `<script>` tag avoids the escaping inside the string.
 
-</script> closes the current script tag.
+## 💡 Working Payload
+</script><script>alert(1)</script> 
 
-A new <script> tag is injected.
-
-The browser executes alert(1) normally.
-
-Result:
-
-The injected script runs successfully, confirming the reflected XSS.
+## 📝 Notes
+Since the string escaping blocks simple injections, closing the `<script>` tag is the easiest bypass.
