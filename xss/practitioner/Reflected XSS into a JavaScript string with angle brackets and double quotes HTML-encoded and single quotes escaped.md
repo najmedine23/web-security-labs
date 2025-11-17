@@ -1,32 +1,25 @@
-Overview
+# Reflected XSS into a JavaScript string (HTML‑encoded angle brackets and escaped single quotes)
+**Level:** Practitioner  
+**Category:** XSS  
+**Status:** Solved
 
-In this lab, the search input is reflected inside a JavaScript string.
-The application applies the following transformations:
+## 🔍 Lab Description
+The server reflects the search parameter inside a JavaScript string.  
+In this context:
+- Angle brackets `< >` and double quotes `"` are HTML‑encoded.
+- Single quotes `'` are escaped (`\'`).
+- Backslashes `\` are **not** escaped.
 
-< and > are HTML‑encoded
+This mix prevents normal string‑breaking with `'` but leaves a bypass using `\`.
 
-Double quotes are HTML‑encoded
+## 🎯 Goal
+Break out of the JavaScript string and execute arbitrary JavaScript (alert).
 
-Single quotes are escaped (' → \')
+## 🧠 What I Learned
+- How HTML encoding affects script injections.
+- How escaped single quotes behave inside JS strings.
+- How an unescaped backslash can break sanitization.
+- How to comment out the rest of a JS line to avoid syntax errors.
 
-Backslashes are not escaped*
-
-Because of this behavior, only some characters are usable for breaking out of the JavaScript string.
-
-Context
-
-The reflection looks like this:var query = '<user input>';
-If you try:test'payload
-the single quote becomes \', so the string does not break.
-But if you try:test\payload
-the backslash stays as \ — this becomes the entry point for exploitation.
-Approach
-Use the unescaped backslash to cancel the escaping and inject JavaScript that closes the string and triggers code execution.
-Payload:\'-alert(1)//
-Why it works
-\ prevents the following ' from being escaped.
-' then closes the JavaScript string.
--alert(1) executes immediately.
-// comments out the rest of the line to avoid syntax errors.
-Result
-The alert box appears, confirming successful exploitation of the reflected XSS.
+#Solution:
+\'-alert(1)//
