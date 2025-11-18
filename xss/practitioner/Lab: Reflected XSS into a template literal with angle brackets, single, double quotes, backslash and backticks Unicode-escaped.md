@@ -1,31 +1,45 @@
 Level: Practitioner
 Category: XSS
-Status: Solved ✅
+Status: Solved
 
 🔍 Lab Description
-The search input is reflected inside a JavaScript template literal:
-const result = `You searched for: ${input}`;
-However, the application performs heavy escaping:
-< and > are HTML-encoded
-Single quotes ' and double quotes " are HTML-encoded
+
+The search input is reflected inside a JavaScript template literal (backticks).
+
+The application performs heavy escaping:
+
+< and > are HTML‑encoded
+
+Single quotes ' and double quotes " are HTML‑encoded
+
 Backslashes \ are escaped
-Backticks ` are escaped
-This means you cannot break out of the template literal using the usual string-breaking XSS payloads.
+
+Backticks are escaped
+
+Because of this, it’s impossible to break out of the template literal using quotes, backticks, or special characters.
+
 🎯 Goal
-Inject JavaScript inside the template literal syntax and trigger:alert(1)
+
+Inject JavaScript inside the template literal expression and trigger alert(1).
+
 🧠 What I Learned
-Even when quotes and backticks are escaped, template literals remain vulnerable if ${} is not sanitized.
-Template literals evaluate JavaScript expressions inside ${ ... }.
-You don't always need to break the string—sometimes the vulnerability is inside the JavaScript expression context.
-HTML-encoded characters like &#x27; are not decoded by JavaScript, so they cannot be used to break out.
+
+Template literals execute whatever is placed inside ${ ... }.
+
+Even when quotes and backticks are escaped, ${} can still allow code execution if not sanitized.
+
+HTML entities like &#x27; do not act as quotes inside JavaScript.
+
+When inside a template literal, the vulnerability is often expression injection, not string breaking.
+
 💡 Working Payload:
 ${alert(1)}
-This takes advantage of the fact that template literals treat ${ ... } as executable JavaScript.
-The resulting code becomes:const result = `You searched for: ${alert(1)}`;
-📝 Notes
-Breaking out of the backtick string fails because all dangerous characters are escaped.
-${} is the only unescaped vector → expression injection.
-This is a common pattern in modern JavaScript applications:
-secure strings, insecure expressions.
+This injects a JavaScript expression directly into the template literal and executes it.
 
-When you see a template literal, always test:${alert(1)}
+📝 Notes
+
+Breaking the template literal is impossible because all dangerous characters are escaped.
+
+${} is the only unescaped vector → expression injection is the correct path.
+
+In any template literal, always test ${alert(1)} first.
