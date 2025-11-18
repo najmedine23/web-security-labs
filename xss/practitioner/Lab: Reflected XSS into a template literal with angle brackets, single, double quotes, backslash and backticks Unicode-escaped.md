@@ -1,7 +1,8 @@
+Reflected XSS into a JavaScript Template Literal (heavy escaping)
+
 Level: Practitioner
 Category: XSS
 Status: Solved
-
 🔍 Lab Description
 
 The search input is reflected inside a JavaScript template literal (backticks).
